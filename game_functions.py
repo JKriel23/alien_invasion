@@ -56,8 +56,14 @@ def atmosphere(settings, ship):
     if ship.centery >= ship.screen_rect.bottom -25:
         ship.moving_down = False
 
-def check_collision(bullets, aliens):
+def check_collision(bullets, ship, aliens):
     pygame.sprite.groupcollide(bullets, aliens, True, True)
+    """
+    ship.rect = ship.image.get_rect()
+    aliens.rect = aliens.image.get_rect()
+    if pygame.Rect.colliderect(ship.rect, aliens.rect) == True:
+        pygame.sprite.kill(aliens)
+    """
 
 def limit_bullets(bullets):
     for bullet in bullets:
@@ -72,13 +78,13 @@ def update_screen(settings, screen, ship, bullets, aliens):
 
     # draw fleet of aliens
     aliens.draw(screen)
-    aliens.update()
+    aliens.update(screen)
 
     # draws ship
     ship.blitme()
 
     # blows up aliens
-    check_collision(bullets, aliens)
+    check_collision(bullets, ship, aliens)
 
     # limits number of bullets
     limit_bullets(bullets)
@@ -99,7 +105,7 @@ def create_fleet(settings, screen, ship, aliens):
     # creates alien fleet
     alien = Alien(settings, screen)
     number_of_aliens = get_number_of_aliens(settings, alien.rect.width)
-    number_of_rows = get_number_rows(settings, alien.rect.height, ship.rect.height)
+    number_of_rows = int(get_number_rows(settings, alien.rect.height, ship.rect.height) / 1.25)
 
     for row_number in range(number_of_rows):
             for alien_number in range(number_of_aliens):
@@ -122,6 +128,3 @@ def create_alien(settings, screen, aliens, alien_number, row_number):
     alien.rect.x = alien.x
     alien.rect.y = alien.rect.height + 2 *alien.rect.height * row_number
     aliens.add(alien)
-
-def update_fleet(settings, screen, aliens):
-    pass

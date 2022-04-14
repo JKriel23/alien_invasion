@@ -28,24 +28,30 @@ class Alien(Sprite):
         self.available_space_x = self.settings.screen_width - (2 * self.rect.width)
         self.number_of_aliens = int(self.available_space_x / (2 * self.rect.width))
 
-        self.speed = 1
+        self.speed = .5
         self.direction = 1
+        self.move = True
 
     def blitme(self):
         """ draws the alien on the screen"""
         self.screen.blit(self.image, self.rect)
 
-    def update(self):
+    def update(self, settings):
         """moves alien"""
-        self.move_right = True
-        if self.move_right:
-            self.x += self.speed * self.direction
-            self.rect.x = self.x
+        if self.check_screen():
+            self.direction = self.direction * -1
+            self.rect.y += 25
+
+        self.x += self.speed * self.direction
+        self.rect.x = self.x
+
+
+
 
     def check_screen(self):
         """returns true if alien hits wall"""
         screen_rect = self.screen.get_rect()
-        if self.rect.right >= screen_rect.right:
+        if self.rect.right > screen_rect.right:
             return True
-        elif self.rect.left <= 0:
+        elif self.rect.left < 0:
             return True
