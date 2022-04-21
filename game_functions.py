@@ -64,9 +64,19 @@ def check_collision(bullets, settings, aliens):
 
 
 
-def EndGame(aliens):
-    if EndGame:
-        pygame.sprite.Sprite.kill(aliens)
+def EndGame(aliens, ship):
+    # END1 = 1
+    # END2 = 1
+
+    for alien in aliens:
+        if alien.rect.y == 625:
+        """if alien.rect.y == ship.rect.y:
+            END1 = 2
+        if alien.rect.x == ship.rect.x:
+            END2 = 2
+        if END1 + END2 == 4:"""
+            sys.exit()
+
 
 def get_number_of_aliens(settings, alien_width):
     available_space_x = settings.screen_width - (2 * alien_width)

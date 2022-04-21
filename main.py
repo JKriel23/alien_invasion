@@ -47,5 +47,8 @@ def alien_invasion():
         # updates screen
         gf.update_screen(settings, screen, ship, bullets, aliens)
 
+        #ends game
+        gf.EndGame(aliens, ship)
+
 
 alien_invasion()
