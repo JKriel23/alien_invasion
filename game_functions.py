@@ -3,6 +3,7 @@ import sys
 from bullets import Bullets
 from aliens import Alien
 
+
 # checks for key press (L/R) (UP/DOWN) (SHOOT)
 def Key_down(event, settings, screen, ship, bullets):
     """problem on line 9"""
@@ -56,14 +57,26 @@ def atmosphere(settings, ship):
     if ship.centery >= ship.screen_rect.bottom -25:
         ship.moving_down = False
 
-def check_collision(bullets, ship, aliens):
-    pygame.sprite.groupcollide(bullets, aliens, True, True)
-    """
-    ship.rect = ship.image.get_rect()
-    aliens.rect = aliens.image.get_rect()
-    if pygame.Rect.colliderect(ship.rect, aliens.rect) == True:
-        pygame.sprite.kill(aliens)
-    """
+def check_collision(bullets, settings, aliens):
+    alien_collides = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    if alien_collides:
+        settings.score +=1
+
+
+
+def EndGame(aliens):
+    if EndGame:
+        pygame.sprite.Sprite.kill(aliens)
+
+def get_number_of_aliens(settings, alien_width):
+    available_space_x = settings.screen_width - (2 * alien_width)
+    number_of_aliens = int(available_space_x / (2 * alien_width))
+    return number_of_aliens
+
+def display_score(screen, settings):
+    font = pygame.font.SysFont("Times New Roman", 30, True, False)
+    surface = font.render("Score: " + str(abs(63-settings.score)), True, (255, 255, 255))
+    screen.blit(surface, (430, 20))
 
 def limit_bullets(bullets):
     for bullet in bullets:
@@ -84,7 +97,7 @@ def update_screen(settings, screen, ship, bullets, aliens):
     ship.blitme()
 
     # blows up aliens
-    check_collision(bullets, ship, aliens)
+    check_collision(bullets, settings, aliens)
 
     # limits number of bullets
     limit_bullets(bullets)
@@ -94,6 +107,10 @@ def update_screen(settings, screen, ship, bullets, aliens):
     # draws bullets
     for bullet in bullets.sprites():
         bullet.draw_bullet()
+
+    # Displays score
+    display_score(screen, settings)
+
     # sets boundaries
     walls(settings, ship)
     atmosphere(settings, ship)
@@ -111,10 +128,7 @@ def create_fleet(settings, screen, ship, aliens):
             for alien_number in range(number_of_aliens):
                 create_alien(settings, screen, aliens, alien_number, row_number)
 
-def get_number_of_aliens(settings, alien_width):
-    available_space_x = settings.screen_width - (2 * alien_width)
-    number_of_aliens = int(available_space_x / (2 * alien_width))
-    return number_of_aliens
+
 
 def get_number_rows(settings, alien_height, ship_height):
     available_space_y = (settings.screen_length - 3 *alien_height - ship_height)

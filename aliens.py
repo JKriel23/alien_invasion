@@ -1,6 +1,7 @@
 import pygame
 # from settings import Settings
 from pygame.sprite import Sprite
+import game_functions as gf
 
 class Alien(Sprite):
     """class which represents each alien"""
@@ -45,7 +46,9 @@ class Alien(Sprite):
         self.x += self.speed * self.direction
         self.rect.x = self.x
 
-
+    def collider(self, ship):
+        if self.y == ship.rect.y:
+            self.ASCollide = True
 
 
     def check_screen(self):

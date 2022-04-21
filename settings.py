@@ -3,7 +3,7 @@ class Settings():
 
     def __init__(self):
         # screen settings
-        self.bg_color = (0,50,0)
+        self.bg_color = (0,0,0)
         self.screen_width = 1000
         self.screen_length = 625
 
@@ -16,4 +16,4 @@ class Settings():
 
         # player settings
         self.lives = 3
-        self.score = 0
+        self.score = 63

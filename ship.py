@@ -16,7 +16,7 @@ class Ship():
         self.screen_rect = screen.get_rect()
 
         # speed setting
-        self.speed = .33
+        self.speed = .75
 
         # set starting location of each ship
         # makes center x of ship same as center x of screen
