@@ -1,7 +1,11 @@
+import time
+
 import pygame
 import sys
 from bullets import Bullets
 from aliens import Alien
+from button import Button
+
 
 
 # checks for key press (L/R) (UP/DOWN) (SHOOT)
@@ -33,7 +37,7 @@ def Key_up(event, ship):
         if event.key == pygame.K_DOWN:
             ship.moving_down = False
 
-def check_events(settings, screen, ship, bullets):
+def check_events(settings, screen, ship, bullets, play_button):
     # checks for key/mouse events and responds
     # loop that checks for keypress
     for event in pygame.event.get():
@@ -41,6 +45,11 @@ def check_events(settings, screen, ship, bullets):
         if event.type == pygame.QUIT:
             # closes game
             sys.exit()
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x,mouse_y = pygame.mouse.get_pos()
+            if play_button.rect.collidepoint(mouse_x, mouse_y):
+                settings.game_active = True
 
         Key_down(event, settings, screen, ship, bullets)
         Key_up(event, ship)
@@ -64,18 +73,26 @@ def check_collision(bullets, settings, aliens):
 
 
 
-def EndGame(aliens, ship):
-    # END1 = 1
-    # END2 = 1
-
+def EndGame(settings, screen, aliens, ship):
     for alien in aliens:
-        if alien.rect.y == 625:
-        """if alien.rect.y == ship.rect.y:
-            END1 = 2
-        if alien.rect.x == ship.rect.x:
-            END2 = 2
-        if END1 + END2 == 4:"""
-            sys.exit()
+        LINE = False
+        if alien.rect.y in range(ship.rect.top, ship.rect.bottom):
+            LINE = True
+        if alien.rect.x in range(ship.rect.left, ship.rect.right) and LINE:
+            for alien in aliens:
+                alien.kill()
+                if settings.lives >= 1:
+                    create_fleet(settings,screen, ship, aliens)
+            settings.lives -= 1
+            if settings.lives <= 1:
+                font = pygame.font.SysFont("Times New Roman", 30, True, False)
+                surface = font.render("GAME OVER" + "Score:" + str(abs(63 - settings.score)), True, (255, 255, 255))
+                screen.blit(surface, (430, 250))
+        if settings.score == 125:
+            alien.kill()
+            create_fleet(settings, screen, ship, aliens)
+
+
 
 
 def get_number_of_aliens(settings, alien_width):
@@ -95,35 +112,41 @@ def limit_bullets(bullets):
     # if len(bullets) > 1:
     #    pygame.sprite.Group.empty(bullets)
 
-def update_screen(settings, screen, ship, bullets, aliens):
+def update_screen(settings, screen, ship, bullets, aliens, play_button):
     # draws background
     screen.fill(settings.bg_color)
 
-    # draw fleet of aliens
-    aliens.draw(screen)
-    aliens.update(screen)
+    # updates button
+    if not settings.game_active:
+        play_button.draw_button()
+    elif settings.game_active:
 
-    # draws ship
-    ship.blitme()
 
-    # blows up aliens
-    check_collision(bullets, settings, aliens)
+        # draw fleet of aliens
+        aliens.draw(screen)
+        aliens.update(screen)
 
-    # limits number of bullets
-    limit_bullets(bullets)
+        # draws ship
+        ship.blitme()
 
-    # updates ship position
-    ship.update()
-    # draws bullets
-    for bullet in bullets.sprites():
-        bullet.draw_bullet()
+        # blows up aliens
+        check_collision(bullets, settings, aliens)
 
-    # Displays score
-    display_score(screen, settings)
+        # limits number of bullets
+        limit_bullets(bullets)
 
-    # sets boundaries
-    walls(settings, ship)
-    atmosphere(settings, ship)
+        # updates ship position
+        ship.update()
+        # draws bullets
+        for bullet in bullets.sprites():
+            bullet.draw_bullet()
+
+        # Displays score
+        display_score(screen, settings)
+
+        # sets boundaries
+        walls(settings, ship)
+        atmosphere(settings, ship)
 
     # 'flips through flipbook'/updates display
     pygame.display.flip()

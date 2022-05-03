@@ -17,3 +17,5 @@ class Settings():
         # player settings
         self.lives = 3
         self.score = 63
+
+        self.game_active = False

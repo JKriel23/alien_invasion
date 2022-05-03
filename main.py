@@ -7,6 +7,7 @@ from ship import Ship
 import game_functions as gf
 from pygame.sprite import Group
 from aliens import Alien
+from button import Button
 
 
 
@@ -32,23 +33,29 @@ def alien_invasion():
     bullets = Group()
     aliens = Group()
 
+    # makes play button
+    play_button = Button(settings, screen, "Start")
+
     # Creates alien fleet
     gf.create_fleet(settings, screen, ship, aliens)
 
     # loop to start animation
     while True:
         # access event handler from game_functions
-        gf.check_events(settings, screen, ship, bullets)
+        gf.check_events(settings, screen, ship, bullets, play_button)
 
         #
         bullets.update()
         # print(len(bullets))
 
         # updates screen
-        gf.update_screen(settings, screen, ship, bullets, aliens)
+        gf.update_screen(settings, screen, ship, bullets, aliens, play_button)
+
 
         #ends game
-        gf.EndGame(aliens, ship)
+        gf.EndGame(settings, screen, aliens, ship)
+
+        print(settings.score)
 
 
 alien_invasion()
