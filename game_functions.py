@@ -54,7 +54,7 @@ def check_events(settings, screen, ship, bullets, play_button):
         Key_down(event, settings, screen, ship, bullets)
         Key_up(event, ship)
 
-def walls(settings, ship):
+def walls(settings, screen, ship, alien, aliens):
     if ship.rect.right >= settings.screen_width:
         ship.moving_right = False
     if ship.rect.left <= 0:
@@ -64,6 +64,12 @@ def walls(settings, ship):
         ship.moving_up = False
     if ship.rect.bottom >= ship.screen_rect.bottom:
         ship.moving_down = False
+
+def alien_offscreen(settings, screen, aliens):
+    for alien in aliens:
+        if alien.rect.top >= settings.screen_length:
+            print("Your score was:   " + settings.score)
+            sys.exit()
 
 def check_collision(bullets, settings, aliens):
     if pygame.sprite.groupcollide(bullets, aliens, True, True):
@@ -99,8 +105,9 @@ def reset_ship(ship, settings):
     ship.centery = settings.screen_length - 50
 
 
-def GameOver(settings, screen):
+def GameOver(settings, screen, aliens):
         if settings.lives < 1:
+            aliens.empty()
             font = pygame.font.SysFont("Times New Roman", 50, True, False)
             surface = font.render("GAME OVER" + "   " + "SCORE:" + str(settings.score), True, (255, 0, 255))
             screen.blit(surface, (settings.screen_width/4, settings.screen_length/2))
@@ -125,7 +132,7 @@ def limit_bullets(bullets):
     # if len(bullets) > 1:
     #    pygame.sprite.Group.empty(bullets)
 
-def update_screen(settings, screen, ship, bullets, aliens, play_button):
+def update_screen(settings, screen, ship, bullets, alien, aliens, play_button):
     # draws background
     screen.fill(settings.bg_color)
 
@@ -137,7 +144,7 @@ def update_screen(settings, screen, ship, bullets, aliens, play_button):
 
         # draw fleet of aliens
         aliens.draw(screen)
-        aliens.update(screen)
+        aliens.update(settings, screen)
 
         # draws ship
         ship.blitme()
@@ -160,13 +167,13 @@ def update_screen(settings, screen, ship, bullets, aliens, play_button):
         display_score(screen, settings)
 
         # sets boundaries
-        walls(settings, ship)
+        walls(settings, screen, ship, alien, aliens)
         # atmosphere(settings, ship)
 
 
         new_wave(settings, screen, ship, aliens)
 
-        GameOver(settings,screen)
+        GameOver(settings,screen, aliens)
 
     # 'flips through flipbook'/updates display
     pygame.display.flip()

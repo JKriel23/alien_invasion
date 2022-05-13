@@ -1,6 +1,8 @@
 import pygame
 # from settings import Settings
 from pygame.sprite import Sprite
+
+import game_functions
 import game_functions as gf
 
 class Alien(Sprite):
@@ -37,18 +39,21 @@ class Alien(Sprite):
         """ draws the alien on the screen"""
         self.screen.blit(self.image, self.rect)
 
-    def update(self, settings):
+    def update(self, settings, screen):
         """moves alien"""
         if self.check_screen():
             self.direction = self.direction * -1
-            self.rect.y += 25
+            if self.rect.y <= settings.screen_length:
+                self.rect.y += 25
+            if self.rect.y >= settings.screen_length:
+                game_functions.GameOver(settings, screen, self)
 
         self.x += self.speed * self.direction
         self.rect.x = self.x
 
-    def collider(self, ship):
-        if self.y == ship.rect.y:
-            self.ASCollide = True
+    # def collider(self, ship):
+    #    if self.y == ship.rect.y:
+    #        self.ASCollide = True
 
 
     def check_screen(self):
@@ -58,3 +63,6 @@ class Alien(Sprite):
             return True
         elif self.rect.left < 0:
             return True
+
+    def ycheck(self):
+        print(self.rect.y)

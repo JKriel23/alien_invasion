@@ -44,19 +44,19 @@ def alien_invasion():
     while True:
         # access event handler from game_functions
         gf.check_events(settings, screen, ship, bullets, play_button)
+        gf.alien_offscreen(settings, screen, aliens)
         #
         bullets.update()
         # print(len(bullets))
         # updates screen
-        gf.update_screen(settings, screen, ship, bullets, aliens, play_button)
+        gf.update_screen(settings, screen, ship, bullets, alien, aliens, play_button)
 
 
         #ends game
         #gf.EndGame(settings, screen, aliens, ship)
         if settings.lives <= 0:
-            gf.GameOver(settings, screen)
+            gf.GameOver(settings, screen, aliens)
 
-        print(settings.lives)
 
 
 alien_invasion()
